@@ -1,0 +1,86 @@
+.article {
+  width: 880px;
+  height: 140px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 4px 12px 0px #00000026;
+
+  &LeftBlock {
+    width: 75%;
+
+    &Header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+  }
+
+  &Title {
+    font-size: 20px;
+    color: #1890ff;
+  }
+
+  &Likes {
+    font-size: 12px;
+    margin-left: 10px;
+
+    &Img {
+      margin-right: 5px;
+      vertical-align: top;
+    }
+  }
+
+  &BtnLike {
+    cursor: pointer;
+    background-color: unset;
+    border: none;
+    width: auto;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  &Tags {
+    display: flex;
+    gap: 8px;
+
+    & span {
+      font-size: 12px;
+      color: #000000;
+      border: 1px solid #000000;
+      border-radius: 2px;
+      padding: 1px 4px;
+    }
+  }
+
+  &Description {
+    font-size: 12px;
+    line-height: 20px;
+    line-break: anywhere;
+    margin-top: 5px;
+  }
+
+  &UserInformation {
+    display: flex;
+    align-items: baseline;
+
+    span {
+      font-size: 12px;
+      color: #00000080;
+    }
+  }
+
+  &Username {
+    align-self: center;
+    margin-right: 8px;
+  }
+
+  &AvatarImg {
+    max-width: 46px;
+    max-height: 46px;
+  }
+}

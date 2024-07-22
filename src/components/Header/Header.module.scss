@@ -1,0 +1,73 @@
+header {
+  width: 100%;
+  background-color: #fff;
+  padding: 10px 0;
+}
+
+.headerWrapper {
+  width: 900px;
+  margin: 0 auto;
+  padding: 0 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.title {
+  font-size: 18px;
+}
+
+.headerAuth {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.btnSignIn {
+  font-size: 18px;
+  padding: 10px 14px;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.btnSignUp {
+  color: #52c41a;
+  font-size: 18px;
+  padding: 10px 14px;
+  background-color: #fff;
+  border: 1px solid #52c41a;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btnCreateArticle {
+  color: #52c41a;
+  font-size: 14px;
+  padding: 5px 14px;
+  background-color: #fff;
+  border: 1px solid #52c41a;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btnLogOut {
+  font-size: 18px;
+  padding: 10px 14px;
+  background-color: #fff;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.userAvatar {
+  max-width: 46px;
+  max-height: 46px;
+}

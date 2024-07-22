@@ -1,0 +1,15 @@
+.articleList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 26px;
+  margin: 26px 0;
+  padding: 0 10px;
+}
+
+.articlePagination {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}

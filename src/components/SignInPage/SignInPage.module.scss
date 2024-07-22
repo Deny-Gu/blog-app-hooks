@@ -1,0 +1,89 @@
+.signInWrapper {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 40px 32px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  box-shadow:
+    0px 0.61px 2.93px 0px #00000005,
+    0px 1.46px 7.05px 0px #00000007,
+    0px 2.75px 13.27px 0px #00000009,
+    0px 4.91px 23.68px 0px #0000000b,
+    0px 9.19px 44.28px 0px #0000000d,
+    0px 22px 106px 0px #00000012;
+}
+
+.signInForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+    text-align: center;
+  }
+
+  p {
+    font-size: 14px;
+    color: #f5222d;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #262626;
+    padding: 4px 0;
+  }
+
+  input {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 16px;
+    outline: none;
+  }
+
+  input::placeholder {
+    color: #bfbfbf;
+  }
+
+  input[type='submit'] {
+    color: #fff;
+    background-color: #1890ff;
+    border-radius: 4px;
+    margin-bottom: 5px;
+  }
+}
+
+.signUp {
+  color: #8c8c8c;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: center;
+
+  a {
+    color: #1890ff;
+  }
+}
+
+input.error {
+  border: 1px solid #f5222d;
+}
