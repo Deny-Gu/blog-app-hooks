@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import styles from './ArticleItem.module.scss';
-import heartSvg from '../../assets/icon/heart.svg';
-import heartActiveSvg from '../../assets/icon/heart-active.svg';
-import { Article } from '../../types/Article';
-import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
-import { useAppDispatch } from '../../store/hooks';
-import { favoriteArticle, unfavoriteArticle } from '../../store/services/articlesAPI';
-import { useAuth } from '../AuthProvider/AuthProvider';
+import React, { useState } from "react";
+import styles from "./ArticleItem.module.scss";
+import heartSvg from "../../assets/icon/heart.svg";
+import heartActiveSvg from "../../assets/icon/heart-active.svg";
+import { Article } from "../../types/Article";
+import { format } from "date-fns";
+import { Link } from "react-router-dom";
+import { useAuth } from "../AuthProvider/AuthProvider";
+import { favoriteArticle, unfavoriteArticle } from "../../services/articlesAPI";
 
-const ArticleItem: React.FC<Article> = ({
+function ArticleItem({
   slug,
   title,
   description,
@@ -18,28 +17,30 @@ const ArticleItem: React.FC<Article> = ({
   favoritesCount,
   author,
   updatedAt,
-}) => {
+}: Article) {
   const [heartActive, setHeartActive] = useState(favorited);
+  const [isFavorited, setIsFavorited] = useState(favorited);
   const [count, setCount] = useState(favoritesCount);
   const { isAuth } = useAuth();
-  const dispatch = useAppDispatch();
 
-  const shortenText = (str: string, maxLen: number, separator = ' ') => {
+  const shortenText = (str: string, maxLen: number, separator = " ") => {
     if (str.length <= maxLen) {
       return str;
     }
-    return str.substr(0, str.lastIndexOf(separator, maxLen)) + ' ...';
+    return str.substr(0, str.lastIndexOf(separator, maxLen)) + " ...";
   };
 
   const handleFavorite = () => {
-    dispatch(favoriteArticle(slug));
+    favoriteArticle(slug);
     setHeartActive(true);
+    setIsFavorited(true);
     setCount((prevState) => prevState + 1);
   };
 
   const handleUnfavorite = () => {
-    dispatch(unfavoriteArticle(slug));
+    unfavoriteArticle(slug);
     setHeartActive(false);
+    setIsFavorited(false);
     setCount((prevState) => prevState - 1);
   };
 
@@ -51,10 +52,13 @@ const ArticleItem: React.FC<Article> = ({
             <Link to={`/articles/${slug}`}>{shortenText(title, 56)}</Link>
           </span>
           <span className={styles.articleLikes}>
-            <button className={styles.articleBtnLike} disabled={!isAuth && true}>
+            <button
+              className={styles.articleBtnLike}
+              disabled={!isAuth && true}
+            >
               <img
                 className={styles.articleLikesImg}
-                onClick={favorited ? handleUnfavorite : handleFavorite}
+                onClick={isFavorited ? handleUnfavorite : handleFavorite}
                 src={heartActive ? heartActiveSvg : heartSvg}
                 alt="like"
               />
@@ -75,15 +79,19 @@ const ArticleItem: React.FC<Article> = ({
         <div className={styles.articleUserInformation}>
           <div className={styles.articleUsername}>
             <p>{author.username}</p>
-            <span>{format(updatedAt, 'PP')}</span>
+            <span>{format(updatedAt, "PP")}</span>
           </div>
           <div className={styles.articleUserAvatar}>
-            <img className={styles.articleAvatarImg} src={author.image} alt="avatar" />
+            <img
+              className={styles.articleAvatarImg}
+              src={author.image}
+              alt="avatar"
+            />
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default ArticleItem;

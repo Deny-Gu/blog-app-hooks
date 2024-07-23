@@ -1,4 +1,4 @@
-import { IRejectValue } from './IRejectValue';
+import { IRejectValue } from "./IRejectValue";
 
 export interface IErrorUser {
   regUser?: null | IRejectValue;

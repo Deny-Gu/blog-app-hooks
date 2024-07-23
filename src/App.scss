@@ -1,28 +1,28 @@
-@use '~inter-ui/default' with (
+@use "~inter-ui/default" with (
   $inter-font-display: swap,
-  $inter-font-path: '~inter-ui/web'
+  $inter-font-path: "~inter-ui/web"
 );
 
-@use '~inter-ui/variable' with (
+@use "~inter-ui/variable" with (
   $inter-font-display: swap,
-  $inter-font-path: '~inter-ui/variable'
+  $inter-font-path: "~inter-ui/variable"
 );
 
 @include default.all;
 @include variable.all;
 
 html {
-  font-family: 'Inter', 'system-ui';
+  font-family: "Inter", "system-ui";
 }
 
 @supports (font-variation-settings: normal) {
   html {
-    font-family: 'InterVariable', 'system-ui';
+    font-family: "InterVariable", "system-ui";
   }
 }
 
 * {
-  font-family: 'Inter', 'system-ui';
+  font-family: "Inter", "system-ui";
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -35,7 +35,7 @@ body {
 
 main {
   position: relative;
-  min-height: 90vh;
+  min-height: 100vh;
   max-width: 900px;
   margin: 0 auto;
 }

@@ -1,36 +1,39 @@
-import { Link, useNavigate } from 'react-router-dom';
-import styles from './SignInPage.module.scss';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { logUser } from '../../store/services/userAPI';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { useEffect } from 'react';
-import { message } from 'antd';
-import { clearError, clearSuccess } from '../../store/slices/userSlice';
-import { useAuth } from '../AuthProvider/AuthProvider';
-import { ISignInForm } from '../../types/ISignInForm';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styles from "./SignInPage.module.scss";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useCallback, useEffect, useState } from "react";
+import { message } from "antd";
+import { useAuth } from "../AuthProvider/AuthProvider";
+import { ISignInForm } from "../../types/ISignInForm";
+import { IErrorUser } from "../../types/IErrorUser";
+import { logUser } from "../../services/userAPI";
 
 const schema: yup.ObjectSchema<ISignInForm> = yup
   .object({
-    email: yup.string().email('Please enter a valid email').required('No email provided.'),
-    password: yup.string().required('No password provided.'),
+    email: yup
+      .string()
+      .email("Please enter a valid email")
+      .required("No email provided."),
+    password: yup.string().required("No password provided."),
   })
   .required();
 
-const SignInPage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { user, isLoading, error } = useAppSelector((state) => state.user);
+function SignInPage() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<IErrorUser | null>(null);
   const [messageApi, contextHolder] = message.useMessage();
+  const { editUser, isAuth, loginAuth } = useAuth();
   const navigate = useNavigate();
-  const { isAuth, loginAuth } = useAuth();
 
-  const errorModal = async () => {
+  const errorModal = useCallback(async () => {
     await messageApi.open({
-      type: 'error',
+      type: "error",
       content: error?.logUser?.message,
     });
-  };
+  }, [error?.logUser?.message, messageApi]);
 
   const {
     register,
@@ -41,29 +44,28 @@ const SignInPage: React.FC = () => {
   });
 
   const handleSubmitForm = (data: ISignInForm) => {
-    dispatch(logUser(data));
+    setIsLoading(true);
+    logUser(data).then((res) => {
+      if (res.user) {
+        editUser(res.user);
+        loginAuth();
+        setIsLoading(false);
+      }
+      if (res.logUser) {
+        setError(res);
+        setIsLoading(false);
+      }
+    });
   };
 
   useEffect(() => {
-    return () => {
-      dispatch(clearError());
-      dispatch(clearSuccess());
-    };
-  }, []);
-
-  useEffect(() => {
     if (isAuth) {
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
     }
-    if (user) {
-      loginAuth();
-      dispatch(clearSuccess());
-      navigate('/', { replace: true });
-    }
-    if (error?.logUser) {
+    if (error) {
       errorModal();
     }
-  }, [isAuth, error, user]);
+  }, [isAuth, error, navigate, errorModal]);
 
   return (
     <>
@@ -78,13 +80,14 @@ const SignInPage: React.FC = () => {
             <label htmlFor="email">Email address</label>
             <input
               className={
-                errors.email || error?.logUser?.fields?.includes('email or password')
+                errors.email ||
+                error?.logUser?.fields?.includes("email or password")
                   ? styles.error
                   : null
               }
               id="email"
               placeholder="Email address"
-              {...register('email', { required: true })}
+              {...register("email", { required: true })}
             />
             {errors.email && <p>{errors.email.message}</p>}
           </span>
@@ -92,19 +95,20 @@ const SignInPage: React.FC = () => {
             <label htmlFor="password">Password</label>
             <input
               className={
-                errors.password || error?.logUser?.fields?.includes('email or password')
+                errors.password ||
+                error?.logUser?.fields?.includes("email or password")
                   ? styles.error
                   : null
               }
               type="password"
               id="password"
               placeholder="Password"
-              {...register('password', { required: true })}
+              {...register("password", { required: true })}
             />
             {errors.password && <p>{errors.password.message}</p>}
           </span>
           <span className={styles.signUp}>
-            <input type="submit" value={isLoading ? 'Загрузка...' : 'Login'} />
+            <input type="submit" value={isLoading ? "Загрузка..." : "Login"} />
             Don’t have an account?
             <Link to="/sign-up"> Sign Up</Link>.
           </span>
@@ -112,6 +116,6 @@ const SignInPage: React.FC = () => {
       </div>
     </>
   );
-};
+}
 
 export default SignInPage;

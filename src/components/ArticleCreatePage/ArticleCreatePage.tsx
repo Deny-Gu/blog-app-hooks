@@ -1,25 +1,27 @@
-import { useForm, useFieldArray } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { useEffect } from 'react';
-import styles from './ArticleCreatePage.module.scss';
-import { createArticle } from '../../store/services/articlesAPI';
-import { useNavigate } from 'react-router-dom';
-import { ICreateArticleForm } from '../../types/ICreateArticleForm';
+import React from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useEffect, useState } from "react";
+import styles from "./ArticleCreatePage.module.scss";
+import { useNavigate } from "react-router-dom";
+import { ICreateArticleForm } from "../../types/ICreateArticleForm";
+import { createArticle } from "../../services/articlesAPI";
+import ErrorBlock from "../ErrorBlock/ErrorBlock";
 
 const schema: yup.ObjectSchema<ICreateArticleForm> = yup
   .object({
-    title: yup.string().required('No title provided.'),
-    description: yup.string().required('No description provided.'),
-    body: yup.string().required('No body provided.'),
-    tagList: yup.array(yup.string().required('fff').trim()),
+    title: yup.string().required("No title provided."),
+    description: yup.string().required("No description provided."),
+    body: yup.string().required("No body provided."),
+    tagList: yup.array(yup.string().required("fff").trim()),
   })
   .required();
 
-const ArticleCreatePage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { isLoading, success } = useAppSelector((state) => state.articles);
+function ArticleCreatePage() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const {
@@ -29,25 +31,38 @@ const ArticleCreatePage: React.FC = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      tagList: [' '],
+      tagList: [" "],
     },
     resolver: yupResolver(schema),
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'tagList',
+    name: "tagList",
   });
 
   const handleSubmitForm = (data: ICreateArticleForm) => {
-    dispatch(createArticle(data));
+    setIsLoading(true);
+    createArticle(data).then((res) => {
+      setSuccess(true);
+      setIsLoading(false);
+      if (res.message) {
+        setError(res.message);
+        setSuccess(false);
+        setIsLoading(false);
+      }
+    });
   };
 
   useEffect(() => {
     if (success) {
       navigate(`/`);
     }
-  }, [success]);
+  }, [navigate, success]);
+
+  if (error) {
+    return <ErrorBlock />;
+  }
 
   return (
     <div className={styles.createArticleWrapper}>
@@ -63,7 +78,7 @@ const ArticleCreatePage: React.FC = () => {
             type="text"
             id="title"
             placeholder="Title"
-            {...register('title')}
+            {...register("title")}
           />
           {errors.title && <p>{errors.title.message}</p>}
         </span>
@@ -74,7 +89,7 @@ const ArticleCreatePage: React.FC = () => {
             type="text"
             id="description"
             placeholder="Description"
-            {...register('description')}
+            {...register("description")}
           />
           {errors.description && <p>{errors.description.message}</p>}
         </span>
@@ -85,7 +100,7 @@ const ArticleCreatePage: React.FC = () => {
             id="body"
             rows={6}
             placeholder="Text"
-            {...register('body')}
+            {...register("body")}
           />
           {errors.body && <p>{errors.body.message}</p>}
         </span>
@@ -100,13 +115,18 @@ const ArticleCreatePage: React.FC = () => {
                       <li className={styles.tagItem} key={item.id}>
                         <input
                           className={
-                            (errors.tagList && errors.tagList[index] && styles.error) +
-                            ' ' +
+                            (errors.tagList &&
+                              errors.tagList[index] &&
+                              styles.error) +
+                            " " +
                             styles.tag
                           }
                           {...register(`tagList.${index}`, { required: true })}
                         />
-                        <button className={styles.btnDeleteTag} onClick={() => remove(index)}>
+                        <button
+                          className={styles.btnDeleteTag}
+                          onClick={() => remove(index)}
+                        >
                           Delete
                         </button>
                       </li>
@@ -121,7 +141,7 @@ const ArticleCreatePage: React.FC = () => {
               className={styles.btnAddTag}
               type="button"
               onClick={() => {
-                append('');
+                append("");
               }}
             >
               Add tag
@@ -129,11 +149,11 @@ const ArticleCreatePage: React.FC = () => {
           </div>
         </div>
         <span className={styles.editProfileSave}>
-          <input type="submit" value={isLoading ? 'Загрузка...' : 'Send'} />
+          <input type="submit" value={isLoading ? "Загрузка..." : "Send"} />
         </span>
       </form>
     </div>
   );
-};
+}
 
 export default ArticleCreatePage;

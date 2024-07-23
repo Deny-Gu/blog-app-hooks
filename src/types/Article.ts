@@ -4,8 +4,8 @@ export type Article = {
   description: string;
   body: string;
   tagList: string[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | number | Date;
+  updatedAt: string | number | Date;
   favorited: boolean;
   favoritesCount: number;
   author: {

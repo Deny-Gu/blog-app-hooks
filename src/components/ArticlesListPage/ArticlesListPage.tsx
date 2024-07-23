@@ -1,25 +1,40 @@
-import React from 'react';
-import ArticleItem from '../ArticleItem/ArticleItem';
-import { Pagination } from 'antd';
-import styles from './ArticlesListPage.module.scss';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { useState, useEffect } from 'react';
-import { fetchArticles } from '../../store/services/articlesAPI';
-import Loader from '../Loader/Loader';
-import ErrorBlock from '../ErrorBlock/ErrorBlock';
+import React from "react";
+import ArticleItem from "../ArticleItem/ArticleItem";
+import { Pagination } from "antd";
+import styles from "./ArticlesListPage.module.scss";
+import { useState, useEffect } from "react";
+import Loader from "../Loader/Loader";
+import ErrorBlock from "../ErrorBlock/ErrorBlock";
+import { getArticles } from "../../services/articlesAPI";
+import { Article } from "../../types/Article";
+import { useAuth } from "../AuthProvider/AuthProvider";
 
-const ArticleList: React.FC = () => {
-  const dispatch = useAppDispatch();
+function ArticleList() {
+  const [articles, setArticles] = useState<Article[] | null>(null);
+  const [articlesCount, setArticlesCount] = useState<number>(0);
   const [pagination, setPagination] = useState<number>(1);
-  const { articles, articlesCount, isLoading, error } = useAppSelector((state) => state.articles);
-  const user = useAppSelector((state) => state.user);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const { isAuth } = useAuth();
 
   useEffect(() => {
-    dispatch(fetchArticles(pagination * 5 - 5));
-  }, [pagination, user]);
+    setIsLoading(true);
+    getArticles(pagination * 5 - 5).then((res) => {
+      if (res.articles) {
+        setArticles(res.articles);
+        setArticlesCount(res.articlesCount);
+        setIsLoading(false);
+      }
+      if (res.message) {
+        setError(res.message);
+        setIsLoading(false);
+      }
+    });
+  }, [pagination, isAuth]);
 
   const articleItems =
-    articles && articles.map((item) => <ArticleItem key={item.slug} {...item} />);
+    articles &&
+    articles.map((item) => <ArticleItem key={item.slug} {...item} />);
 
   if (isLoading) {
     return <Loader />;
@@ -43,6 +58,6 @@ const ArticleList: React.FC = () => {
       </div>
     </>
   );
-};
+}
 
 export default ArticleList;
